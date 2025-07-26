@@ -3,10 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useStore } from '@/contexts/StoreContext';
+import { useNavigate } from 'react-router-dom';
+import CategoriesDropdown from './CategoriesDropdown';
+import CoursesDropdown from './CoursesDropdown';
 
 const Header = () => {
   const { state, dispatch } = useStore();
   const { cart, searchQuery } = state;
+  const navigate = useNavigate();
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -21,9 +25,9 @@ const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             <span>Free shipping on orders above ₹999</span>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
               <User className="h-4 w-4 mr-2" />
-              Account
+              Login
             </Button>
           </div>
         </div>
@@ -32,7 +36,10 @@ const Header = () => {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 
+              className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent cursor-pointer"
+              onClick={() => navigate('/')}
+            >
               SatyaElectronics Hub
             </h1>
           </div>
@@ -75,12 +82,13 @@ const Header = () => {
 
         {/* Navigation */}
         <nav className="flex items-center gap-6 py-3 border-t border-border/50">
-          <Button variant="ghost" size="sm">Home</Button>
-          <Button variant="ghost" size="sm">Categories</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>Home</Button>
+          <CategoriesDropdown />
+          <CoursesDropdown />
           <Button variant="ghost" size="sm">Arduino</Button>
-          <Button variant="ghost" size="sm">Raspberry Pi</Button>
-          <Button variant="ghost" size="sm">Sensors</Button>
-          <Button variant="ghost" size="sm">Motors</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/category/raspberry-pi')}>Raspberry Pi</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/category/sensors')}>Sensors</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/category/motors')}>Motors</Button>
           <Button variant="ghost" size="sm">IoT</Button>
           <Button variant="ghost" size="sm">Robotics</Button>
           <Button variant="ghost" size="sm">About</Button>
