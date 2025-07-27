@@ -11,12 +11,35 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const { dispatch } = useStore();
+  const { state, dispatch } = useStore();
   const [showQuickView, setShowQuickView] = useState(false);
+  
+  const isInWishlist = state.wishlist.some(item => item.id === product.id);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking button
     dispatch({ type: 'ADD_TO_CART', payload: product });
     toast.success(`${product.name} added to cart!`);
+  };
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click when clicking button
+    if (isInWishlist) {
+      dispatch({ type: 'REMOVE_FROM_WISHLIST', payload: product.id });
+      toast.success(`${product.name} removed from wishlist`);
+    } else {
+      dispatch({ type: 'ADD_TO_WISHLIST', payload: product });
+      toast.success(`${product.name} added to wishlist`);
+    }
+  };
+
+  const handleCardClick = () => {
+    setShowQuickView(true);
+  };
+
+  const handleQuickViewClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowQuickView(false);
   };
 
   const renderStars = (rating: number) => {
@@ -37,7 +60,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <>
-      <Card className="shadow-lg rounded-xl p-4 hover:scale-105 transition-transform duration-300 bg-white overflow-hidden group">
+      <Card 
+        className="shadow-lg hover:shadow-xl rounded-xl p-4 hover:scale-105 transition-all duration-300 bg-white dark:bg-gray-800 overflow-hidden group cursor-pointer animate-fade-in"
+        onClick={handleCardClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardClick();
+          }
+        }}
+        aria-label={`View details for ${product.name}`}
+      >
         <div className="relative">
           <img
             src={product.image}
@@ -47,42 +82,48 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           {/* Discount Badge */}
           {hasDiscount && (
-            <Badge className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+            <Badge className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow-md transition-colors duration-200">
               -{discountPercentage}%
             </Badge>
           )}
           
           {/* Low Stock Badge */}
           {product.stock < 10 && (
-            <Badge variant="destructive" className="absolute top-2 left-2 text-xs">
+            <Badge variant="destructive" className="absolute top-2 left-2 text-xs shadow-md">
               Low Stock
             </Badge>
           )}
           
           {/* Action Buttons */}
-          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300 flex gap-1">
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm hover:bg-white"
+              className="h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-md transition-all duration-200"
               aria-label="Quick view"
-              onClick={() => setShowQuickView(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowQuickView(true);
+              }}
             >
               <Eye className="h-3 w-3" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-8 p-0 bg-white/80 backdrop-blur-sm hover:bg-white"
-              aria-label="Add to wishlist"
+              className={`h-8 w-8 p-0 bg-white/90 backdrop-blur-sm hover:bg-white shadow-md transition-all duration-200 ${
+                isInWishlist ? 'text-red-500' : 'text-gray-600'
+              }`}
+              aria-label={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+              onClick={handleWishlistToggle}
             >
-              <Heart className="h-3 w-3" />
+              <Heart className={`h-3 w-3 ${isInWishlist ? 'fill-current' : ''}`} />
             </Button>
           </div>
         </div>
 
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <Badge variant="secondary" className="text-xs">
               {product.brand}
             </Badge>
@@ -91,18 +132,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </Badge>
           </div>
           
-          <h3 className="text-lg font-semibold mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+          <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 min-h-[3.5rem]">
             {product.name}
           </h3>
           
-          <div className="flex items-center gap-1 mb-2">
+          <div className="flex items-center gap-1 mb-3">
             {renderStars(product.rating)}
-            <span className="text-xs text-muted-foreground ml-1">
+            <span className="text-xs text-gray-500 dark:text-gray-400 ml-1">
               ({product.rating})
             </span>
           </div>
           
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+          <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2 min-h-[2.5rem]">
             {product.description}
           </p>
         </CardContent>
@@ -110,22 +151,22 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <CardFooter className="p-4 pt-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex flex-col w-full sm:w-auto">
             <div className="flex items-center gap-2">
-              <span className="text-blue-600 font-bold text-lg">
+              <span className="text-blue-600 dark:text-blue-400 font-bold text-lg">
                 ₹{product.price.toLocaleString()}
               </span>
               {hasDiscount && (
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                   ₹{originalPrice.toLocaleString()}
                 </span>
               )}
             </div>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               Stock: {product.stock}
             </span>
           </div>
           
           <Button
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded w-full sm:w-auto text-sm font-medium transition-colors"
+            className="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-4 py-2 rounded-lg w-full sm:w-auto text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleAddToCart}
             disabled={product.stock === 0}
             aria-label={`Add ${product.name} to cart`}
@@ -138,16 +179,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       {/* Quick View Modal */}
       {showQuickView && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+          onClick={handleQuickViewClose}
+        >
+          <div 
+            className="bg-white dark:bg-gray-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold">{product.name}</h2>
+              <div className="flex justify-between items-start mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{product.name}</h2>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setShowQuickView(false)}
+                  onClick={handleQuickViewClose}
                   aria-label="Close quick view"
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <X className="h-5 w-5" />
                 </Button>
@@ -158,14 +206,14 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-64 object-cover rounded-lg"
+                    className="w-full h-64 object-cover rounded-lg shadow-md"
                   />
                 </div>
                 
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold mb-2">Product Details</h3>
-                    <p className="text-gray-600">{product.description}</p>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Product Details</h3>
+                    <p className="text-gray-600 dark:text-gray-300">{product.description}</p>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -175,26 +223,26 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   
                   <div className="flex items-center gap-1">
                     {renderStars(product.rating)}
-                    <span className="text-sm text-gray-600 ml-2">
+                    <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
                       ({product.rating} out of 5)
                     </span>
                   </div>
                   
                   <div>
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                       ₹{product.price.toLocaleString()}
                     </span>
                     {hasDiscount && (
-                      <span className="text-lg text-gray-500 line-through ml-2">
+                      <span className="text-lg text-gray-500 dark:text-gray-400 line-through ml-2">
                         ₹{originalPrice.toLocaleString()}
                       </span>
                     )}
                   </div>
                   
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
                     <p>Stock: {product.stock} units</p>
                     {hasDiscount && (
-                      <p className="text-red-600 font-medium">
+                      <p className="text-red-600 dark:text-red-400 font-medium">
                         Save {discountPercentage}% on this item!
                       </p>
                     )}
@@ -202,7 +250,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                   
                   <div className="flex gap-3">
                     <Button
-                      className="bg-green-500 hover:bg-green-600 text-white px-6 py-2"
+                      className="bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-6 py-2 shadow-md hover:shadow-lg transition-all duration-200"
                       onClick={handleAddToCart}
                       disabled={product.stock === 0}
                     >
@@ -211,10 +259,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="px-6 py-2"
+                      className={`px-6 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 ${
+                        isInWishlist ? 'text-red-500 border-red-500' : ''
+                      }`}
+                      onClick={handleWishlistToggle}
                     >
-                      <Heart className="h-4 w-4 mr-2" />
-                      Wishlist
+                      <Heart className={`h-4 w-4 mr-2 ${isInWishlist ? 'fill-current' : ''}`} />
+                      {isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
                     </Button>
                   </div>
                 </div>

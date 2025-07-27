@@ -19,6 +19,7 @@ export interface CartItem extends Product {
 interface StoreState {
   products: Product[];
   cart: CartItem[];
+  wishlist: Product[];
   searchQuery: string;
   selectedCategory: string;
   isCartOpen: boolean;
@@ -28,6 +29,8 @@ type StoreAction =
   | { type: 'ADD_TO_CART'; payload: Product }
   | { type: 'REMOVE_FROM_CART'; payload: string }
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
+  | { type: 'ADD_TO_WISHLIST'; payload: Product }
+  | { type: 'REMOVE_FROM_WISHLIST'; payload: string }
   | { type: 'SET_SEARCH_QUERY'; payload: string }
   | { type: 'SET_CATEGORY'; payload: string }
   | { type: 'TOGGLE_CART' }
@@ -36,6 +39,7 @@ type StoreAction =
 const initialState: StoreState = {
   products: [],
   cart: [],
+  wishlist: [],
   searchQuery: '',
   selectedCategory: 'all',
   isCartOpen: false,
@@ -74,6 +78,22 @@ const storeReducer = (state: StoreState, action: StoreAction): StoreState => {
             ? { ...item, quantity: action.payload.quantity }
             : item
         ),
+      };
+
+    case 'ADD_TO_WISHLIST':
+      const existingWishlistItem = state.wishlist.find(item => item.id === action.payload.id);
+      if (existingWishlistItem) {
+        return state; // Already in wishlist
+      }
+      return {
+        ...state,
+        wishlist: [...state.wishlist, action.payload],
+      };
+
+    case 'REMOVE_FROM_WISHLIST':
+      return {
+        ...state,
+        wishlist: state.wishlist.filter(item => item.id !== action.payload),
       };
 
     case 'SET_SEARCH_QUERY':

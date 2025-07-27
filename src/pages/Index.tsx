@@ -3,6 +3,7 @@ import HeroSection from '@/components/HeroSection';
 import CategorySidebar from '@/components/CategorySidebar';
 import ProductGrid from '@/components/ProductGrid';
 import ProductFilters from '@/components/ProductFilters';
+import FeaturedSlideshow from '@/components/FeaturedSlideshow';
 import Cart from '@/components/Cart';
 import Partners from '@/components/Partners';
 import Footer from '@/components/Footer';
@@ -28,6 +29,9 @@ const Index = () => {
         <Header />
         
         <HeroSection />
+        
+        {/* Featured Slideshow Section */}
+        <FeaturedSlideshow />
         
         <main className="container mx-auto px-4 py-8">
           <div className="grid lg:grid-cols-4 gap-8">
