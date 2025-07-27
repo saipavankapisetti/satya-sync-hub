@@ -1,4 +1,4 @@
-import { Truck, Shield, Calendar, Wrench, Download, Smartphone, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
+import { Truck, Shield, Calendar, Wrench, Download, Smartphone, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +49,14 @@ const Footer = () => {
     { icon: Youtube, name: "YouTube", href: "#" }
   ];
 
+  const paymentMethods = [
+    { name: "Visa", icon: CreditCard },
+    { name: "Mastercard", icon: CreditCard },
+    { name: "UPI", icon: CreditCard },
+    { name: "PayPal", icon: CreditCard },
+    { name: "Net Banking", icon: CreditCard }
+  ];
+
   const handlePageClick = (path: string) => {
     navigate(path);
   };
@@ -87,17 +95,31 @@ const Footer = () => {
             </div>
 
             {/* Social Media */}
-            <div className="flex gap-3">
+            <div className="flex gap-3 mb-6">
               {socialLinks.map((social, index) => (
                 <Button
                   key={index}
                   variant="ghost"
                   size="sm"
                   className="h-8 w-8 p-0 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                  aria-label={`Follow us on ${social.name}`}
                 >
                   <social.icon className="h-4 w-4" />
                 </Button>
               ))}
+            </div>
+
+            {/* Payment Methods */}
+            <div className="mb-6">
+              <h4 className="font-semibold text-gray-900 mb-3 text-sm">Payment Methods</h4>
+              <div className="flex gap-2 items-center">
+                {paymentMethods.map((method, index) => (
+                  <div key={index} className="flex items-center gap-1 text-xs text-gray-600">
+                    <method.icon className="h-3 w-3" />
+                    <span>{method.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -145,7 +167,8 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Your email"
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                aria-label="Email for newsletter subscription"
               />
               <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
                 Subscribe
