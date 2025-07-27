@@ -9,6 +9,12 @@ import Category from "./pages/Category";
 import Courses from "./pages/Courses";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import IoT from "./pages/IoT";
+import Robotics from "./pages/Robotics";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Search from "./pages/Search";
+import Projects from "./pages/Projects";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +30,12 @@ const App = () => (
           <Route path="/category/:categoryId" element={<Category />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/iot" element={<IoT />} />
+          <Route path="/robotics" element={<Robotics />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/projects" element={<Projects />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

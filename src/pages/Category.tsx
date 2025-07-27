@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import ProductGrid from '@/components/ProductGrid';
 import Cart from '@/components/Cart';
+import Footer from '@/components/Footer';
 import { StoreProvider, useStore } from '@/contexts/StoreContext';
 import { mockProducts } from '@/data/mockProducts';
 
@@ -117,7 +118,7 @@ const CategoryContent = () => {
       
       {/* Category Header */}
       <section className="bg-gradient-card border-b">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6 md:py-8">
           <Button
             variant="ghost"
             onClick={() => navigate('/categories')}
@@ -127,23 +128,23 @@ const CategoryContent = () => {
             Back to Categories
           </Button>
           
-          <div className="flex items-center gap-6">
-            <div className={`w-16 h-16 rounded-2xl ${category.color} flex items-center justify-center text-white text-2xl`}>
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+            <div className={`w-12 h-12 md:w-16 md:h-16 rounded-2xl ${category.color} flex items-center justify-center text-white text-xl md:text-2xl`}>
               {category.icon}
             </div>
             
             <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
                 {category.name}
               </h1>
-              <p className="text-lg text-muted-foreground mb-4">
+              <p className="text-sm md:text-base lg:text-lg text-muted-foreground mb-4">
                 {category.description}
               </p>
-              <div className="flex items-center gap-4">
-                <Badge variant="secondary">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <Badge variant="secondary" className="text-xs">
                   {filteredProducts.length} products available
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="outline" className="text-xs">
                   Free shipping on orders above ₹999
                 </Badge>
               </div>
@@ -153,19 +154,19 @@ const CategoryContent = () => {
       </section>
 
       {/* Products Section */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <main className="container mx-auto px-4 py-6 md:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-2xl font-semibold mb-2">
+            <h2 className="text-xl md:text-2xl font-semibold mb-2">
               {category.name} Products
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-sm md:text-base text-muted-foreground">
               Showing {filteredProducts.length} products
             </p>
           </div>
           
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
               <Filter className="h-4 w-4 mr-2" />
               Filter
             </Button>
@@ -173,12 +174,12 @@ const CategoryContent = () => {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <Card className="p-12 text-center">
-            <div className="text-6xl mb-4">{category.icon}</div>
-            <h3 className="text-xl font-semibold mb-2">
+          <Card className="p-8 md:p-12 text-center">
+            <div className="text-4xl md:text-6xl mb-4">{category.icon}</div>
+            <h3 className="text-lg md:text-xl font-semibold mb-2">
               No products found in {category.name}
             </h3>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-sm md:text-base text-muted-foreground mb-4">
               We're working on adding more products to this category.
             </p>
             <Button onClick={() => navigate('/categories')}>
@@ -191,21 +192,21 @@ const CategoryContent = () => {
 
         {/* Related Categories */}
         {filteredProducts.length > 0 && (
-          <div className="mt-16">
-            <h3 className="text-xl font-semibold mb-6">Related Categories</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="mt-12 md:mt-16">
+            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6">Related Categories</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
               {Object.entries(categoryInfo)
                 .filter(([key]) => key !== categoryId)
                 .slice(0, 4)
                 .map(([key, info]) => (
                   <Card
                     key={key}
-                    className="p-4 cursor-pointer hover:shadow-card transition-all hover:scale-105"
+                    className="p-3 md:p-4 cursor-pointer hover:shadow-card transition-all hover:scale-105"
                     onClick={() => navigate(`/category/${key}`)}
                   >
                     <div className="text-center">
-                      <div className="text-2xl mb-2">{info.icon}</div>
-                      <h4 className="font-medium text-sm">{info.name}</h4>
+                      <div className="text-xl md:text-2xl mb-2">{info.icon}</div>
+                      <h4 className="font-medium text-xs md:text-sm">{info.name}</h4>
                     </div>
                   </Card>
                 ))}
@@ -214,6 +215,7 @@ const CategoryContent = () => {
         )}
       </main>
       
+      <Footer />
       <Cart />
     </div>
   );

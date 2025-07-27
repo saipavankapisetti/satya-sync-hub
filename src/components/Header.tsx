@@ -1,9 +1,10 @@
-import { Search, ShoppingCart, User, Menu } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useStore } from '@/contexts/StoreContext';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import CategoriesDropdown from './CategoriesDropdown';
 import CoursesDropdown from './CoursesDropdown';
 
@@ -11,17 +12,28 @@ const Header = () => {
   const { state, dispatch } = useStore();
   const { cart, searchQuery } = state;
   const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-card">
       <div className="container mx-auto px-4">
-        {/* Top bar */}
-        <div className="flex items-center justify-between py-2 text-sm text-muted-foreground border-b border-border/50">
+        {/* Top bar - Hidden on mobile */}
+        <div className="hidden md:flex items-center justify-between py-2 text-sm text-muted-foreground border-b border-border/50">
           <div className="flex items-center gap-4">
-            <span>📧 support@satyaelectronics.com</span>
-            <span>📞 +91 9876543210</span>
+            <span className="flex items-center gap-1">
+              <Mail className="h-3 w-3" />
+              support@satyaelectronics.com
+            </span>
+            <span className="flex items-center gap-1">
+              <Phone className="h-3 w-3" />
+              +91 9876543210
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <span>Free shipping on orders above ₹999</span>
@@ -37,16 +49,21 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <h1 
-              className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent cursor-pointer"
+              className="text-xl md:text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent cursor-pointer"
               onClick={() => navigate('/')}
             >
               SatyaElectronics Hub
             </h1>
           </div>
 
-          {/* Search bar */}
-          <div className="flex-1 max-w-xl mx-8">
-            <div className="relative">
+          {/* Search bar - Hidden on mobile */}
+          <div className="hidden md:flex flex-1 max-w-xl mx-8">
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+              }
+            }} className="relative w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 type="text"
@@ -55,45 +72,215 @@ const Header = () => {
                 onChange={(e) => dispatch({ type: 'SET_SEARCH_QUERY', payload: e.target.value })}
                 className="pl-10 pr-4 py-2 w-full border-input focus:border-primary focus:ring-primary"
               />
-            </div>
+            </form>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Mobile search button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+
             <Button
               variant="cart"
               size="sm"
               onClick={() => dispatch({ type: 'TOGGLE_CART' })}
               className="relative"
             >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Cart
+              <ShoppingCart className="h-4 w-4 mr-1 md:mr-2" />
+              <span className="hidden sm:inline">Cart</span>
               {totalItems > 0 && (
                 <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">
                   {totalItems}
                 </Badge>
               )}
             </Button>
-            <Button variant="ghost" size="sm">
-              <Menu className="h-4 w-4" />
+
+            {/* Mobile menu button */}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={toggleMobileMenu}
+              className="md:hidden"
+            >
+              {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </Button>
+
+            {/* Desktop login button */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/login')}
+              className="hidden md:flex"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Login
             </Button>
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-6 py-3 border-t border-border/50">
+        {/* Mobile Search Bar - Shown when mobile menu is open */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden pb-4">
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                setIsMobileMenuOpen(false);
+              }
+            }} className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search for electronics, components, gadgets..."
+                value={searchQuery}
+                onChange={(e) => dispatch({ type: 'SET_SEARCH_QUERY', payload: e.target.value })}
+                className="pl-10 pr-4 py-2 w-full border-input focus:border-primary focus:ring-primary"
+              />
+            </form>
+          </div>
+        )}
+
+        {/* Navigation - Desktop */}
+        <nav className="hidden md:flex items-center gap-6 py-3 border-t border-border/50">
           <Button variant="ghost" size="sm" onClick={() => navigate('/')}>Home</Button>
           <CategoriesDropdown />
           <CoursesDropdown />
-          <Button variant="ghost" size="sm">Arduino</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/category/arduino')}>Arduino</Button>
           <Button variant="ghost" size="sm" onClick={() => navigate('/category/raspberry-pi')}>Raspberry Pi</Button>
           <Button variant="ghost" size="sm" onClick={() => navigate('/category/sensors')}>Sensors</Button>
           <Button variant="ghost" size="sm" onClick={() => navigate('/category/motors')}>Motors</Button>
-          <Button variant="ghost" size="sm">IoT</Button>
-          <Button variant="ghost" size="sm">Robotics</Button>
-          <Button variant="ghost" size="sm">About</Button>
-          <Button variant="ghost" size="sm">Contact</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/iot')}>IoT</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/robotics')}>Robotics</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>Projects</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/about')}>About</Button>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/contact')}>Contact</Button>
         </nav>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border/50">
+            <div className="py-4 space-y-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }}
+              >
+                Home
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/categories'); setIsMobileMenuOpen(false); }}
+              >
+                Categories
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/courses'); setIsMobileMenuOpen(false); }}
+              >
+                Courses
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/category/arduino'); setIsMobileMenuOpen(false); }}
+              >
+                Arduino
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/category/raspberry-pi'); setIsMobileMenuOpen(false); }}
+              >
+                Raspberry Pi
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/category/sensors'); setIsMobileMenuOpen(false); }}
+              >
+                Sensors
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/category/motors'); setIsMobileMenuOpen(false); }}
+              >
+                Motors
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/iot'); setIsMobileMenuOpen(false); }}
+              >
+                IoT
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/robotics'); setIsMobileMenuOpen(false); }}
+              >
+                Robotics
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/projects'); setIsMobileMenuOpen(false); }}
+              >
+                Projects
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }}
+              >
+                About
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => { navigate('/contact'); setIsMobileMenuOpen(false); }}
+              >
+                Contact
+              </Button>
+            </div>
+            
+            {/* Mobile contact info */}
+            <div className="py-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                support@satyaelectronics.com
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                +91 9876543210
+              </div>
+              <div className="text-xs">
+                Free shipping on orders above ₹999
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
