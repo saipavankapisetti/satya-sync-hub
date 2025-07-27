@@ -37,10 +37,6 @@ const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             <span>Free shipping on orders above ₹999</span>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
-              <User className="h-4 w-4 mr-2" />
-              Login
-            </Button>
           </div>
         </div>
 
@@ -102,6 +98,17 @@ const Header = () => {
               )}
             </Button>
 
+            {/* Login button - Single login button for both mobile and desktop */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/login')}
+              className="hidden sm:flex"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Login
+            </Button>
+
             {/* Mobile menu button */}
             <Button 
               variant="ghost" 
@@ -111,62 +118,66 @@ const Header = () => {
             >
               {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>
-
-            {/* Desktop login button */}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => navigate('/login')}
-              className="hidden md:flex"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Login
-            </Button>
           </div>
         </div>
 
-        {/* Mobile Search Bar - Shown when mobile menu is open */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden pb-4">
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              if (searchQuery.trim()) {
-                navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-                setIsMobileMenuOpen(false);
-              }
-            }} className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Search for electronics, components, gadgets..."
-                value={searchQuery}
-                onChange={(e) => dispatch({ type: 'SET_SEARCH_QUERY', payload: e.target.value })}
-                className="pl-10 pr-4 py-2 w-full border-input focus:border-primary focus:ring-primary"
-              />
-            </form>
-          </div>
-        )}
+        {/* Navigation bar */}
+        <div className="hidden md:flex items-center justify-center py-2 border-t border-border/50">
+          <nav className="flex items-center gap-6 text-sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+              Home
+            </Button>
+            <CategoriesDropdown />
+            <CoursesDropdown />
+            <Button variant="ghost" size="sm" onClick={() => navigate('/category/arduino')}>
+              Arduino
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/category/raspberry-pi')}>
+              Raspberry Pi
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/category/sensors')}>
+              Sensors
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/category/motors')}>
+              Motors
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/iot')}>
+              IoT
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/robotics')}>
+              Robotics
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>
+              Projects
+            </Button>
+          </nav>
+        </div>
 
-        {/* Navigation - Desktop */}
-        <nav className="hidden md:flex items-center gap-6 py-3 border-t border-border/50">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>Home</Button>
-          <CategoriesDropdown />
-          <CoursesDropdown />
-          <Button variant="ghost" size="sm" onClick={() => navigate('/category/arduino')}>Arduino</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/category/raspberry-pi')}>Raspberry Pi</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/category/sensors')}>Sensors</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/category/motors')}>Motors</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/iot')}>IoT</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/robotics')}>Robotics</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>Projects</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/about')}>About</Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/contact')}>Contact</Button>
-        </nav>
-
-        {/* Mobile Navigation Menu */}
+        {/* Mobile menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/50">
-            <div className="py-4 space-y-2">
+          <div className="md:hidden border-t border-border/50 bg-background/95 backdrop-blur-sm">
+            {/* Mobile search */}
+            <div className="p-4 border-b border-border/50">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                  setIsMobileMenuOpen(false);
+                }
+              }} className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Search for electronics, components, gadgets..."
+                  value={searchQuery}
+                  onChange={(e) => dispatch({ type: 'SET_SEARCH_QUERY', payload: e.target.value })}
+                  className="pl-10 pr-4 py-2 w-full"
+                />
+              </form>
+            </div>
+
+            {/* Mobile navigation */}
+            <div className="p-4 space-y-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -266,7 +277,7 @@ const Header = () => {
             </div>
             
             {/* Mobile contact info */}
-            <div className="py-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground">
+            <div className="py-4 border-t border-border/50 space-y-2 text-sm text-muted-foreground px-4">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 support@satyaelectronics.com

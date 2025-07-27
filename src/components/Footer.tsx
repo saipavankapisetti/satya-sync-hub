@@ -1,4 +1,4 @@
-import { Truck, Shield, Calendar, Wrench, Download, Smartphone } from 'lucide-react';
+import { Truck, Shield, Calendar, Wrench, Download, Smartphone, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
@@ -29,35 +29,25 @@ const Footer = () => {
     }
   ];
 
-  const topCategories = [
-    "STEM Kits", "Raspberry Pi", "Arduino", "Compatible with Arduino",
-    "Electronic Components", "Electronic Modules", "Drone Parts", "3D Printers/Pens",
-    "IOT & Wireless Boards", "Sensors", "Motors & Mechanical", "Development Boards",
-    "Display Module", "Batteries & Power Supply", "Cables", "Tools & Instruments"
+  const quickLinks = [
+    { name: "All Categories", path: "/categories" },
+    { name: "DIY Projects", path: "/projects" },
+    { name: "Learn & Courses", path: "/courses" },
+    { name: "Technical Support", path: "/support" },
+    { name: "Bulk Orders", path: "/bulk-orders" }
   ];
 
-  const shopByBrand = [
-    "Raspberry Pi", "Arduino", "BBC Micro:Bit", "Seeed Studio", "Bonka LiPo Batteries",
-    "Matata STEM Kit", "Acebott STEM Kit", "Elephant Robotics", "Waveshare", "7Semi",
-    "Noel India", "Elecrow", "Hiwonder", "DFRobot", "Cytron", "Bambu Lab", "Witty Fox",
-    "Multitec", "MetroQ"
+  const popularCategories = [
+    "Arduino", "Raspberry Pi", "Sensors", "Drone Parts", "IoT & Wireless"
   ];
 
-  const blogs = [
-    "Arduino Pin Configuration", "What is AH in Battery", "IR Sensor Working",
-    "Types of Sensors in IoT", "Drone Part List", "How to Choose ESC for Quadcopter",
-    "What is Motor Driver"
+  const socialLinks = [
+    { icon: Facebook, name: "Facebook", href: "#" },
+    { icon: Twitter, name: "Twitter", href: "#" },
+    { icon: Instagram, name: "Instagram", href: "#" },
+    { icon: Linkedin, name: "LinkedIn", href: "#" },
+    { icon: Youtube, name: "YouTube", href: "#" }
   ];
-
-  const pages = [
-    { name: "IoT", path: "/iot" },
-    { name: "Robotics", path: "/robotics" },
-    { name: "Projects", path: "/projects" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" }
-  ];
-
-
 
   const handlePageClick = (path: string) => {
     navigate(path);
@@ -65,59 +55,74 @@ const Footer = () => {
 
   return (
     <footer className="bg-white border-t border-gray-200 mt-16">
+      {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Company Information & Services - Wider column on desktop */}
-          <div className="lg:col-span-2">
-            {/* Logo */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Company Information */}
+          <div className="lg:col-span-1">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-red-600 mb-4">
-                satyaelectronics
+                SatyaElectronics
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                SatyaElectronics Hub is India's most trusted Robotics and DIY store. 
+                Your trusted partner for electronics, robotics, and IoT solutions. 
                 We aim at fostering the growth of knowledge in Embedded Systems, IoT and Automation.
               </p>
             </div>
 
-            {/* Service Highlights */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              {serviceHighlights.map((service, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-                  <service.icon className="h-5 w-5 text-gray-700" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">{service.title}</p>
-                    <p className="text-xs text-gray-500">{service.description}</p>
-                  </div>
-                </div>
-              ))}
+            {/* Contact Information */}
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-red-600" />
+                <span className="text-sm text-gray-600">+91 812 3057 137</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Mail className="h-4 w-4 text-red-600" />
+                <span className="text-sm text-gray-600">support@satyaelectronics.com</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 text-red-600" />
+                <span className="text-sm text-gray-600">Bangalore, Karnataka, India</span>
+              </div>
             </div>
 
-            {/* Download App Section */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center gap-3 mb-3">
-                <Smartphone className="h-5 w-5 text-gray-700" />
-                <span className="font-medium text-gray-900">DOWNLOAD APP</span>
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm" className="flex-1 bg-black text-white hover:bg-gray-800">
-                  <Download className="h-4 w-4 mr-2" />
-                  Android
+            {/* Social Media */}
+            <div className="flex gap-3">
+              {socialLinks.map((social, index) => (
+                <Button
+                  key={index}
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                >
+                  <social.icon className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1">
-                  <Download className="h-4 w-4 mr-2" />
-                  iOS
-                </Button>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Top Categories */}
+          {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Top Categories</h4>
+            <h4 className="font-semibold text-gray-900 mb-4 text-lg">Quick Links</h4>
             <ul className="space-y-2">
-              {topCategories.map((category, index) => (
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <button 
+                    onClick={() => handlePageClick(link.path)}
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors block py-1 text-left w-full"
+                  >
+                    {link.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Popular Categories */}
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-4 text-lg">Popular Categories</h4>
+            <ul className="space-y-2">
+              {popularCategories.map((category, index) => (
                 <li key={index}>
                   <a 
                     href="#" 
@@ -130,88 +135,58 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Shop By Brand */}
+          {/* Newsletter */}
           <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Shop By Brand</h4>
-            <ul className="space-y-2">
-              {shopByBrand.map((brand, index) => (
-                <li key={index}>
-                  <a 
-                    href="#" 
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors block py-1"
-                  >
-                    {brand}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Pages */}
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Pages</h4>
-            <ul className="space-y-2">
-              {pages.map((page, index) => (
-                <li key={index}>
-                  <button 
-                    onClick={() => handlePageClick(page.path)}
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors block py-1 text-left w-full"
-                  >
-                    {page.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Blogs */}
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-4">Blogs</h4>
-            <ul className="space-y-2">
-              {blogs.map((blog, index) => (
-                <li key={index}>
-                  <a 
-                    href="#" 
-                    className="text-sm text-gray-600 hover:text-gray-900 transition-colors block py-1"
-                  >
-                    {blog}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <h4 className="font-semibold text-gray-900 mb-4 text-lg">Newsletter</h4>
+            <p className="text-sm text-gray-600 mb-4">
+              Subscribe to our newsletter for updates and exclusive offers.
+            </p>
+            <div className="space-y-3">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+              />
+              <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+                Subscribe
+              </Button>
+            </div>
           </div>
         </div>
 
-
-
-        {/* Bottom Section */}
-        <div className="border-t border-gray-200 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-gray-500">
-              © 2024 SatyaElectronics Hub. All rights reserved.
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500">Follow us:</span>
-              <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                  <span className="sr-only">Facebook</span>
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                  </svg>
-                </Button>
-                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                  <span className="sr-only">Twitter</span>
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                  </svg>
-                </Button>
-                <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                  <span className="sr-only">Instagram</span>
-                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.244c-.875.807-2.026 1.297-3.323 1.297zm7.718-1.297c-.875.807-2.026 1.297-3.323 1.297s-2.448-.49-3.323-1.297c-.928-.875-1.418-2.026-1.418-3.323s.49-2.448 1.418-3.323c.875-.807 2.026-1.297 3.323-1.297s2.448.49 3.323 1.297c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.244z"/>
-                  </svg>
-                </Button>
+        {/* Service Highlights */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {serviceHighlights.map((service, index) => (
+              <div key={index} className="flex items-center gap-3 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+                <service.icon className="h-6 w-6 text-red-600" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{service.title}</p>
+                  <p className="text-xs text-gray-600">{service.description}</p>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="border-t border-gray-200 bg-gray-50">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-gray-500 text-center md:text-left">
+              © 2024 SatyaElectronics. All rights reserved.
+            </div>
+            <div className="flex items-center gap-6 text-sm">
+              <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">
+                Privacy Policy
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">
+                Terms of Service
+              </a>
+              <a href="#" className="text-gray-500 hover:text-gray-700 transition-colors">
+                Shipping Policy
+              </a>
             </div>
           </div>
         </div>
